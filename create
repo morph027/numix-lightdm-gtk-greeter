@@ -1,0 +1,27 @@
+#!/bin/bash
+
+create_package() {
+TYPE="$1"
+fpm -f -s dir -t $TYPE -n numix-lightdm-gtk-greeter-theme \
+--prefix="/" \
+--vendor "morph027" \
+--maintainer "morph027" \
+--version "$(date +%Y%m%d)" \
+--after-install scripts/after-install.sh \
+--before-remove scripts/before-remove.sh \
+--depends numix-gtk-theme \
+--depends numix-icon-theme-circle \
+--depends "lightdm-gtk-greeter > 1.8" \
+--depends "lightdm > 1.10" \
+-C package_root \
+etc
+}
+
+which fpm > /dev/null
+
+if [ $? -eq 0 ]; then
+  create_package deb
+else
+  echo "fpm not found in PATH"
+  exit 1
+fi
